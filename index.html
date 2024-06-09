@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dia dos namorados</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        .conteudo {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100vh; 
+        }
+
+        .bloco-texto {
+            margin-bottom: 20px;
+        }
+
+        .botao-proxima {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        body {
+            background-color: #333;
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: 'Amatic SC', cursive;
+            font-size: 50px;
+        }
+
+        #botao-um {
+            background-color: #ff69b4;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 24px;
+            font-family: 'Amatic SC', cursive;
+            cursor: pointer;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s, transform 0.3s;
+        }
+
+        #botao-um:hover {
+            background-color: #ff85c2;
+            transform: scale(1.05);
+        }
+
+        #botao-um:active {
+            background-color: #ff4c8b;
+            transform: scale(0.95);
+        }
+
+        #player {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="conteudo" id="conteudo">
+        <div id="bloco-texto">
+            <p class="amatic-sc-regular">
+                <!-- Texto será digitado aqui -->
+            </p>
+        </div>
+        <div class="botao-proxima">
+            <button id="botao-um" style="display: none;">Clique Aqui &#x2764;</button>
+        </div>
+    </div>
+
+    <audio id="audio-player" src="musica.mp3"></audio>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var texto = "Para meu amor, Thais.";
+            var index = 0;
+
+            function digitar() {
+                document.querySelector('#bloco-texto p').textContent += texto[index];
+                index++;
+
+                if (index < texto.length) {
+                    setTimeout(digitar, 150);
+                } else {
+                    document.getElementById('botao-um').style.display = 'block';
+                }
+            }
+
+            digitar();
+
+            document.getElementById('botao-um').addEventListener('click', function() {
+                document.getElementById('conteudo').style.display = 'none';
+                var audio = document.getElementById('audio-player');
+                audio.volume = 0.3; 
+                audio.play();
+            });
+        
+        });
+    </script>
+</body>
+</html>
