@@ -8,13 +8,27 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Amatic+SC:wght@400;700&display=swap" rel="stylesheet">
     <style>
-        .conteudo {
+        body {
+            background-color: #333;
+            margin: 0;
+            padding: 0;
+            color: white;
+            font-family: 'Amatic SC', cursive;
+            font-size: 50px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            text-align: center;
+            overflow: hidden;
+        }
+
+        .conteudo, .carta-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
-            text-align: center;
-            height: 100vh; 
+            z-index: 1; /* Ensures the content is above the emojis */
         }
 
         .bloco-texto {
@@ -25,15 +39,6 @@
             margin-top: 20px;
             display: flex;
             justify-content: center;
-        }
-
-        body {
-            background-color: #333;
-            margin: 0;
-            padding: 0;
-            color: white;
-            font-family: 'Amatic SC', cursive;
-            font-size: 50px;
         }
 
         #botao-um {
@@ -59,8 +64,51 @@
             transform: scale(0.95);
         }
 
-        #player {
+        #audio-player {
             display: none;
+        }
+
+        .carta-container {
+            display: none;
+            text-align: center;
+            max-width: 800px;
+            padding: 20px;
+            background: white;
+            color: #333;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-radius: 10px;
+            font-size: 24px;
+            line-height: 1.6;
+        }
+
+        .carta-container p {
+            margin: 20px 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .carta-container span {
+            opacity: 0;
+            animation: fadeIn 1s forwards;
+        }
+
+        .emoji {
+            position: absolute;
+            top: -50px;
+            font-size: 30px;
+            opacity: 0;
+            animation: fall linear infinite;
+            z-index: 0; /* Ensures the emojis are behind the content */
+        }
+
+        @keyframes fall {
+            to {
+                transform: translateY(100vh);
+                opacity: 1;
+            }
         }
     </style>
 </head>
@@ -76,33 +124,95 @@
         </div>
     </div>
 
-    <audio id="audio-player" src="musica.mp3"></audio>
+    <div class="carta-container" id="carta-container">
+        <div id="carta-texto">
+            <!-- Texto da carta será inserido aqui -->
+        </div>
+    </div>
+
+    <audio id="audio-player" src="musica.mp3" loop></audio>
 
     <script>
         document.addEventListener("DOMContentLoaded", function() {
-            var texto = "Para meu amor, Thais.";
-            var index = 0;
+            var texto1 = "carta aberta para minha namorada, Thais.";
+            var index1 = 0;
 
-            function digitar() {
-                document.querySelector('#bloco-texto p').textContent += texto[index];
-                index++;
+            function digitarTexto1() {
+                document.querySelector('#bloco-texto p').textContent += texto1[index1];
+                index1++;
 
-                if (index < texto.length) {
-                    setTimeout(digitar, 150);
+                if (index1 < texto1.length) {
+                    setTimeout(digitarTexto1, 150);
                 } else {
                     document.getElementById('botao-um').style.display = 'block';
                 }
             }
 
-            digitar();
+            digitarTexto1();
 
             document.getElementById('botao-um').addEventListener('click', function() {
                 document.getElementById('conteudo').style.display = 'none';
+                document.getElementById('carta-container').style.display = 'flex';
                 var audio = document.getElementById('audio-player');
                 audio.volume = 0.3; 
                 audio.play();
+                chuvaDeEmojis();
+                digitarCarta();
             });
-        
+
+            function digitarCarta() {
+                var textoCarta = [
+                    "Meu amor,",
+                    "No próximo Dia dos Namorados, completaremos três anos de namoro. Três anos de amor, de companheirismo e de momentos inesquecíveis. Cada dia ao seu lado é uma maravilha e um previlégio, uma nova chance de ser feliz.",
+                    "Amar você é a melhor parte de mim. Seus sorrisos iluminam e aquecem meu coração e seus abraços me dão forças. Não consigo imaginar minha vida sem você.",
+                    "Quero passar o resto da minha vida ao seu lado, te amando, enfrentando todos os desafios e celebrando nossas conquistas juntos. Prometo estar sempre aqui, te apoiando, te amando e fazendo de tudo para te ver feliz.",
+                    "Você é tudo para mim. Te amo mais do que palavras podem expressar."
+                ];
+
+                var cartaTexto = document.getElementById('carta-texto');
+                var indexCarta = 0;
+
+                function digitarTexto(texto, index) {
+                    if (index < texto.length) {
+                        let paragrafo = document.createElement("p");
+                        cartaTexto.appendChild(paragrafo);
+                        let subIndex = 0;
+                        
+                        function digitarLetra() {
+                            paragrafo.textContent += texto[index][subIndex];
+                            subIndex++;
+                            if (subIndex < texto[index].length) {
+                                setTimeout(digitarLetra, 50);
+                            } else if (index + 1 < texto.length) {
+                                setTimeout(() => digitarTexto(texto, index + 1), 500); // Pequena pausa entre parágrafos
+                            }
+                        }
+
+                        digitarLetra();
+                    }
+                }
+
+                digitarTexto(textoCarta, 0);
+            }
+
+            function chuvaDeEmojis() {
+                var emojis = ["❤️", "🌸"];
+                var quantidade = 50; // Quantidade de emojis
+
+                for (var i = 0; i < quantidade; i++) {
+                    var emoji = document.createElement("div");
+                    emoji.className = "emoji";
+                    emoji.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+                    emoji.style.left = Math.random() * 100 + "vw";
+                    emoji.style.animationDuration = 2 + Math.random() * 3 + "s"; // Duração da queda entre 2 a 5 segundos
+                    document.body.appendChild(emoji);
+
+                    // Remover emoji após a animação
+                    emoji.addEventListener('animationend', function() {
+                        this.remove();
+                    });
+                }
+            }
         });
     </script>
 </body>
